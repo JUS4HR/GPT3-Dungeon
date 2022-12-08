@@ -12,6 +12,19 @@ for prompt in generator.promptStack.getFullPrompt():
     print(prompt.getText())
 
 while True:
-    generator.addUserInputText(input("> "))
-    generator.generateText()
-    print(generator.promptStack.getFullPrompt()[-1].getText())
+    userInput = input("> ")
+    if len(userInput) > 0 and userInput[0] == "/":
+        command = userInput[1:]
+        if command == "retry" or command == "r":
+            if generator.promptStack.removeBack() == -1:
+                print("Regenerate last one")
+                generator.generateText()
+                print(generator.promptStack.getFullPrompt()[-1].getText())
+            else:
+                print("Error: cannot retry.")
+
+
+    else:
+        generator.addUserInputText(userInput)
+        generator.generateText()
+        print(generator.promptStack.getFullPrompt()[-1].getText())

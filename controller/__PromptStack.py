@@ -107,3 +107,12 @@ class PromptStack:
             target.append(prompt)
         self.__activePrompts = target
         self.__recalculateWordCount()
+
+    def removeBack(self, count: int = 1) -> int:
+        for i in range(count):
+            if self.__activePrompts[-1].type != PromptType.SUMMORIZED:
+                self.__activePrompts = self.__activePrompts[:-1]
+                self.__allPromptHistory = self.__allPromptHistory[:-1]
+            else:
+                return i
+        return -1 # -1 is normal instead

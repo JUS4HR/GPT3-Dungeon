@@ -3,7 +3,7 @@ __GPT3-DUNGEON__
  * **Description**    
     Based on OpenAi api, generates story according to player input
  * **Heavily WIP:**    
-    - [ ] retry last
+    - [x] retry last
     - [ ] undo
     - [ ] pin-point edit
     - [ ] change settings in app

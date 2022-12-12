@@ -16,6 +16,7 @@ __GPT3-DUNGEON__
     use python 3.10+    
     ```
     pip install -r requirements.txt
+    export OPENAI_API_KEY=<your openai api key>
     python runWebUi.py
     ```
     open http://localhost:10000 to access webui.    

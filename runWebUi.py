@@ -1,41 +1,85 @@
 from controller import generator
-from webService import webUi
+from webService import webUi, utils
+from json import load as jsonLoad
+from copy import deepcopy as copyDeep
 
-startingPrompt = "It's a rainy day. You're searching in some dark forest. You see a light in the distance."
+sendContentListTemplate = {
+    "new-content-list": [],
+    "modified-content-list": [],
+    "active-word-count": 0,
+    "last-time-summarized": 0,
+}
 
-generator.debug = True
+sendContentTemplate = {
+    "type": "",
+    "id": 0,
+    "content": "",
+}
+
+startingPrompt = jsonLoad(open("startingPrompt.json", "r"))[0]["prompt"]
+
+def parseUserInput(mode: str, text: str) -> str:
+    if text == "":
+        return ""
+    if mode.lower() == "say":
+        text = text.strip("\"")
+        text = "You say \"" + text[0].upper() + text[1:]
+        if (text[-1] == "." and text[-1] == "!" and text[-1] == "?"):
+            text += "\""
+        return text
+    elif mode.lower() == "do":
+        return "You " + utils.firstToSecondPerson(text)
+    elif mode.lower() == "story":
+        return text[0].upper() + text[1:]
+    else:
+        raise Exception("Invalid user mode")
+
+def promptToJson(prompt: generator.PromptStack.Prompt) -> dict:
+    webUi.log("parse prompt: " + prompt.getText())
+    newPromptJson = copyDeep(sendContentTemplate)
+    if prompt.type == generator.PromptStack.PromptType.INPUTED:
+        newPromptJson["type"] = "user"
+    else:
+        newPromptJson["type"] = "generated"
+    newPromptJson["id"] = prompt.getId()
+    newPromptJson["content"] = prompt.getText()
+    return newPromptJson
+
+def startCallback() -> dict:
+    jsonToSend = copyDeep(sendContentListTemplate)
+    for prompt in generator.promptStack.getFullPrompt():
+        jsonToSend["new-content-list"].append(promptToJson(prompt))
+    return jsonToSend
+
+def inputCallback(input: dict) -> dict:
+    # supports commands until buttons are implemented
+    jsonToSend = copyDeep(sendContentListTemplate)
+    if len(input["user-input"]) > 0 and input["user-input"][0] == "/":
+        command = input["user-input"][1:]
+        webUi.log("command: " + command)
+        pass  # TODO: implement commands
+    else:
+        oldPromptIdList = []
+        for prompt in generator.promptStack.getFullPrompt():
+            oldPromptIdList.append(prompt.getId())
+        userInput = parseUserInput(input["user-mode"], input["user-input"])
+        generator.addUserInputText(userInput)
+        generator.generateText()
+        for prompt in generator.promptStack.getFullPrompt():
+            if prompt.getId() not in oldPromptIdList:
+                jsonToSend["new-content-list"].append(promptToJson(prompt))
+    # TODO: implement active-word-count and last-time-summarized
+    return jsonToSend
+
+
+webUi.setStartCallback(startCallback)
+webUi.setInputCallback(inputCallback)
+
+generator.debug = False
 generator.parseAiSettings()
 generator.setStartingText(startingPrompt)
 generator.styleHintPrompt = "Describe the surroundings and character's behavior in detail. Do not mention what \"You\" have done."
-# generator.generateText()
-
-# for prompt in generator.promptStack.getFullPrompt():
-#     print(prompt.getText())
-
-
-def callback(input: dict) -> dict:
-    return {"mode": "add", "new-content": "test"}
-
-
-webUi.setCallback(callback)
+generator.generateText()
 
 webUi.init(__name__)
-
-webUi.run(10000)
-
-# while True:
-#     userInput = input("> ")
-#     if len(userInput) > 0 and userInput[0] == "/":
-#         command = userInput[1:]
-#         if command == "retry" or command == "r":
-#             if generator.promptStack.removeBack() == -1:
-#                 print("Regenerate last one")
-#                 generator.generateText()
-#                 print(generator.promptStack.getFullPrompt()[-1].getText())
-#             else:
-#                 print("Error: cannot retry.")
-
-#     else:
-#         generator.addUserInputText(userInput)
-#         generator.generateText()
-#         print(generator.promptStack.getFullPrompt()[-1].getText())
+webUi.run(10000, False)

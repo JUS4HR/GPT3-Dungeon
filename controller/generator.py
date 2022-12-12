@@ -1,4 +1,4 @@
-from . import __OpenaiAdapter, __PromptStack, __utils
+from . import __OpenaiAdapter, __PromptStack as PromptStack, __utils
 
 # recommended workflow:
 # | starting prompt
@@ -14,7 +14,7 @@ debug = False
 wordCountThreshold = 300
 promptsToKeepWhenSummarizing = 4
 
-promptStack = __PromptStack.PromptStack(debug)
+promptStack = PromptStack.PromptStack(debug)
 
 generatingPrompt = "\nContinue the story above. "
 styleHintPrompt = ""
@@ -51,14 +51,14 @@ def parseAiSettings() -> None:
 def setStartingText(text: str) -> None:
     if len(promptStack.getFullPrompt()) == 0:
         promptStack.addPrompt(
-            __PromptStack.Prompt(__PromptStack.PromptType.STARTING, text))
+            PromptStack.Prompt(PromptStack.PromptType.STARTING, text))
     else:
         print("Starting text set when stack is not empty")
 
 
 def addUserInputText(text: str) -> None:
     promptStack.addPrompt(
-        __PromptStack.Prompt(__PromptStack.PromptType.INPUTED, text))
+        PromptStack.Prompt(PromptStack.PromptType.INPUTED, text))
     __dealWithPromptTooLong()
 
 
@@ -67,7 +67,7 @@ def generateText() -> None:
     prompt += generatingPrompt + styleHintPrompt + generateSuffix
     generatedText = __OpenaiAdapter.generateResponse(prompt)
     promptStack.addPrompt(
-        __PromptStack.Prompt(__PromptStack.PromptType.GENERATED,
+        PromptStack.Prompt(PromptStack.PromptType.GENERATED,
                              generatedText))
     __dealWithPromptTooLong()
 
@@ -83,7 +83,7 @@ def __dealWithPromptTooLong() -> None:
         summary = __OpenaiAdapter.generateResponse(prompt)
         __OpenaiAdapter.setParams(max_tokens=aiSettings["max_tokens"])
         promptStack.summorizeActivePrompt(
-            __PromptStack.Prompt(__PromptStack.PromptType.SUMMORIZED, summary),
+            PromptStack.Prompt(PromptStack.PromptType.SUMMORIZED, summary),
             promptsToKeepWhenSummarizing)
         if debug:
             print("summarizing from: [" + prompt + "]")

@@ -1,0 +1,154 @@
+@import "colorScheme"
+@import "size"
+
+
+.hud-bottom-section // to fill the rest of the area
+    position: absolute
+    bottom: 0
+    left: 0
+    right: 0
+    transition: height 0.5s ease-in-out
+    overflow: hidden
+
+    .hud-menu-bar // item within is vertically laid out
+        height: $menu-bar-height
+        color: $color-text
+        text-align: center
+        display: flex
+        z-index: 55
+        .hud-menu-bar-left-item
+            left: 0
+            width: calc(50% - $menu-bar-mid-item-width / 2)
+            height: 100%
+        .hud-menu-bar-right-item
+            right: 0
+            width: calc(50% - $menu-bar-mid-item-width / 2)
+            height: 100%
+        .hud-show-menu-button // center item
+            font-family: Arial
+            font-stretch: expanded
+            cursor: pointer
+            color: $color-text
+            font-size: 1.5em
+            left: calc(50% - $menu-bar-mid-item-width / 2)
+            width: $menu-bar-mid-item-width
+            height: 100%
+            border: none
+            background: transparent
+            text-shadow: transparentize($color-text, 0.5) 0px 0px 0.5rem
+            transition: text-shadow 0.2s ease-in-out, transform $transition-duration ease-in-out
+            &:hover
+                text-shadow: $color-text 0px 0px 0.5rem
+            &:active
+                color: $color-text-secondary
+
+    .hud-bottom-panel
+        background-color: transparentize($color-forground, 0.2)
+        color: $color-text
+        backdrop-filter: blur($blur-radius)
+        box-shadow: 0 0 0.5rem 0 $color-shadow
+        padding-bottom: $safe-area-bottom
+        &:focus-within
+            padding-bottom: 0
+
+        .hud-input
+            left: 0
+            right: 0
+            height: $input-bar-height
+            background: transparent
+            position: relative
+            box-shadow: none
+
+            input
+                font-size: $input-font-size
+                color: $color-text
+                height: calc($input-height + $input-padding)
+                position: absolute
+                top: calc($input-bar-height / 2)
+                left: calc($side-padding - $input-padding / 2 + $input-padding)
+                padding: 0
+                margin: 0
+                padding-left: calc($input-padding + $button-width + $side-padding)
+                transform: translateY(-50%)
+                width: calc(100% - 4 * $input-padding - $button-width * 2 - 2 * $side-padding)
+                background-color: transparent
+                border-radius: calc(0.5rem + $input-padding / 2)
+                vertical-align: middle
+                border: none
+                outline: none
+                z-index: 51
+                &::placeholder
+                    color: $color-text-secondary
+                &:focus
+                    margin-bottom: 20rem
+                    background-color: transparentize($color-midground, 0.2)
+
+            button
+                font-size: $input-font-size
+                height: $button-height
+                position: absolute
+                top: calc($input-bar-height / 2)
+                padding: 0
+                margin: 0
+                transform: translateY(-50%)
+                width: $button-width
+                vertical-align: middle
+                border: none
+                outline: none
+                cursor: pointer
+                border-radius: 0.5rem
+                box-shadow: 0 0 0.5rem 0 $color-shadow
+                z-index: 52
+                &:active
+                    box-shadow: 0 0 0.5rem 0 $color-shadow inset
+                &.mode-button
+                    margin-left: $input-padding
+                    background-color: transparentize($color-background, 0.2)
+                    color: $color-text
+                    left: $side-padding
+                    transition: background-color 0.2s linear, box-shadow 0.2s linear
+                    &:hover
+                        background-color: $color-midground
+                &.submit-button
+                    margin-right: $input-padding
+                    background-color: $color-primary
+                    color: $color-text
+                    right: $side-padding
+                    transition: opacity 0.1s linear, background-color 0.2s linear, box-shadow 0.2s linear
+                    z-index: 54
+                    &:hover
+                        background-color: $color-primary-highlight
+                &.submit-button-disabled
+                    margin-right: $input-padding
+                    background-color: $color-foreground-highlight
+                    color: $color-text
+                    right: $side-padding
+                    opacity: 0
+                    z-index: 53
+
+    .hud-bottom-menu
+        display: grid
+        left: 0
+        right: 0
+        max-height: 0rem // to hide the menu
+        opacity: 0
+        padding-left: $side-padding
+        padding-right: $side-padding
+        grid-template-columns: repeat(auto-fill, minmax($bottom-menu-button-min-width, 1fr))
+        transition: max-height $transition-duration ease-in-out, opacity $transition-duration ease-in-out
+
+        button
+            color: $color-text
+            cursor: pointer
+            text-align: center
+            background-color: $color-forground
+            box-shadow: 0 0 calc($bottom-menu-grid-gap / 2) 0 $color-shadow
+            padding: $bottom-menu-button-padding
+            border-radius: $bottom-menu-button-padding
+            margin: calc($bottom-menu-grid-gap / 2)
+            border: none
+            outline: none
+            &:hover
+                background-color: $color-foreground-highlight
+            &:active
+                box-shadow: 0 0 calc($bottom-menu-grid-gap / 2) 0 $color-shadow inset

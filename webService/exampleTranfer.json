@@ -1,0 +1,49 @@
+{
+    "@description": "this file is for demonstrating the transferred json",
+    "@from web to flask": {
+        "modified-content-list": [
+            {
+                "type": "user",
+                "id": 1,
+                "content": "this is the first content"
+            },
+            {
+                "type": "generated",
+                "id": 2,
+                "content": "this is the second content"
+            }
+        ],
+        "user-mode": "do",
+        "@user-mode": "choose one of the following: do, say, story",
+        "user-input": "some input",
+        "@": "might add a section to transfer commands from button presses"
+    },
+    "@from flask to web": {
+        "new-content-list": [
+            {
+                "type": "user",
+                "id": 1,
+                "content": "this is the first content"
+            },
+            {
+                "type": "generated",
+                "id": 2,
+                "content": "this is the second content"
+            }
+        ],
+        "modified-content-list": [
+            {
+                "type": "user",
+                "id": 1,
+                "content": "this is the first content"
+            },
+            {
+                "type": "generated",
+                "id": 2,
+                "content": "this is the second content"
+            }
+        ],
+        "active-word-count": 100,
+        "last-time-summarized": 2
+    }
+}

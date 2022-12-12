@@ -1,0 +1,29 @@
+.content-list {
+  height: 100%;
+  overflow: auto;
+  transition: height 0.3s ease-in-out;
+  padding-top: env(safe-area-inset-top);
+}
+.content-list ol, .content-list ul {
+  padding: 0;
+  margin: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+.content-list li {
+  font-size: 1rem;
+  list-style-type: none;
+  background-color: rgb(53, 53, 53);
+  color: rgb(255, 255, 255);
+  border-radius: 0.5rem;
+  left: 0;
+  right: 0;
+  margin: 1rem;
+  padding: 0.5rem;
+  box-shadow: 0 0 0.5rem 0 rgba(0, 0, 0, 0.349);
+  overflow-wrap: break-word;
+}
+.content-list li.content-user {
+  background-color: rgb(69, 69, 69);
+}/*# sourceMappingURL=contentList.css.map */

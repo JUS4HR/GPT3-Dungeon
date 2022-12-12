@@ -20,6 +20,7 @@ $("#user-input-form").submit(function (e) {
         "user-input": userInput,
         "user-mode": activeUserMode
     });
+    // console.log(json_data)
     $("#submit-button").css("opacity", "0");
     $("#submit-button").prop('disabled', true);
     $("#submit-button-disabled").css("opacity", "1");
@@ -30,10 +31,6 @@ $("#user-input-form").submit(function (e) {
         data: json_data,
         success: function (data) {
             // $("div[name='target']").html(data.result);
-            $("#user-input").val("");
-            $("#submit-button").css("opacity", "1");
-            $("#submit-button").prop('disabled', false);
-            $("#submit-button-disabled").css("opacity", "0");
 
             var atBottom = isAtBottom();
             // start of content processing
@@ -41,6 +38,10 @@ $("#user-input-form").submit(function (e) {
                 $("#content-list-content").append('<li>' + data["new-content"] + '</li>');
             }
             // end of content processing
+            $("#user-input").val("");
+            $("#submit-button").css("opacity", "1");
+            $("#submit-button").prop('disabled', false);
+            $("#submit-button-disabled").css("opacity", "0");
             getToBottom(atBottom);
         }
     });

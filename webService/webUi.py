@@ -17,11 +17,14 @@ def init(name: str):
     global __app
     __app = __f.Flask(name,
                       template_folder="webService/html",
-                      static_folder="webService/html")
+                      static_folder="webService/static")
 
     @__app.route("/")
-    def index():
-        return __f.render_template("index.html")
+    
+
+    @__app.route("/play")
+    def loadPlay():
+        return __f.render_template("play.html")
 
     @__app.route("/start", methods=["POST"])
     def processStart():

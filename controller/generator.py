@@ -37,7 +37,7 @@ aiSettings = {
 
 
 # functions
-def parseAiSettings():
+def parseAiSettings() -> None:
     __OpenaiAdapter.setParams(
         engine=aiSettings["engine"],
         temperature=aiSettings["temperature"],
@@ -48,7 +48,7 @@ def parseAiSettings():
     )
 
 
-def setStartingText(text: str):
+def setStartingText(text: str) -> None:
     if len(promptStack.getFullPrompt()) == 0:
         promptStack.addPrompt(
             __PromptStack.Prompt(__PromptStack.PromptType.STARTING, text))
@@ -56,13 +56,13 @@ def setStartingText(text: str):
         print("Starting text set when stack is not empty")
 
 
-def addUserInputText(text: str):
+def addUserInputText(text: str) -> None:
     promptStack.addPrompt(
         __PromptStack.Prompt(__PromptStack.PromptType.INPUTED, text))
     __dealWithPromptTooLong()
 
 
-def generateText():
+def generateText() -> None:
     prompt = promptStack.getSummorizedPromptText()
     prompt += generatingPrompt + styleHintPrompt + generateSuffix
     generatedText = __OpenaiAdapter.generateResponse(prompt)
@@ -72,7 +72,7 @@ def generateText():
     __dealWithPromptTooLong()
 
 
-def __dealWithPromptTooLong():
+def __dealWithPromptTooLong() -> None:
     if debug:
         print("Word count now:", promptStack.getWordCount())
     if promptStack.getWordCount() > wordCountThreshold:

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>GPT-3 Demo</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/style.css')}}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+</head>
+
+<body class="options">
+    <button id="btn-back" class="back-button">Back</button>
+    <label for="save">Save</label>
+    <section id="save">
+        <div>
+            <select id="sel-save">
+                <!-- fill with js -->
+            </select>
+            <button id="btn-delete-save">Delete Save</button>
+            <button id="btn-new-save">New Save</button>
+        </div>
+    </section>
+    <label for="generator">Generator settings</label>
+    <section id="generator">
+        <div>
+            <form id="form-generator">
+                <label for="int-generator-wct">Word Count Threshold</label>
+                <input type="number" step="10" id="int-generator-wct" name="wordCountThreshold">
+                <label for="int-generator-ptkws">Prompts to Keep When Summarizing</label>
+                <input type="number" step="1" id="int-generator-ptkws" name="promptsToKeepWhenSummarizing">
+                <label for="txt-generator-shp">Style Hint Prompt</label>
+                <textarea type="text" id="txt-generator-shp" name="styleHintPrompt"></textarea>
+                <label for="int-generator-scs">Summarizing Sentence Count</label>
+                <input type="number" step="1" id="int-generator-scs" name="summarizingSentenceCount">
+                <section id="sec-generator-ai">
+                    <label for="sel-generator-ai-engine">Engine</label>
+                    <select id="sel-generator-ai-engine" name="aiSettings.engine">
+                        <!-- fill with js -->
+                    </select>
+                    <label for="flt-generator-ai-temp">Temperature</label>
+                    <input type="number" step="any" id="int-generator-ai-temp" name="aiSettings.temperature">
+                    <label for="int-generator-ai-maxtok">Max Tokens</label>
+                    <input type="number" step="10" id="int-generator-ai-maxtok" name="aiSettings.max_tokens">
+                    <label for="int-generator-ai-maxtoksum">Max Tokens Summary</label>
+                    <input type="number" step="10" id="int-generator-ai-maxtoksum" name="aiSettings.max_tokens_summary">
+                    <label for="flt-generator-ai-top-p">Top P</label>
+                    <input type="number" step="any" id="int-generator-ai-top-p" name="aiSettings.top_p">
+                    <label for="flt-generator-ai-freq-pen">Frequency Penalty</label>
+                    <input type="number" step="any" id="int-generator-ai-freq-pen" name="aiSettings.frequency_penalty">
+                    <label for="int-generator-ai-pres-pen">Presence Penalty</label>
+                    <input type="number" step="1" id="int-generator-ai-pres-pen" name="aiSettings.presence_penalty">
+                </section>
+                <button id="btn-generator-submit" type="submit">Apply</button>
+            </form>
+        </div>
+    </section>
+    <label for="sec-account">Account Settings</label>
+    <section id="sec-account">
+        <label for="txt-account-api-key">API Key</label>
+        <textarea type="text" id="txt-account-api-key" placeholder="API Key"></textarea>
+        <button id="btn-account-submit" type="submit">Apply</button>
+        <button id="btn-account-logout" type="button">Log out</button>
+    </section>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="{{url_for('static', filename='js/optionsController.js')}}"></script>
+<script src="{{url_for('static', filename='js/loginController.js')}}"></script>
+
+</html>

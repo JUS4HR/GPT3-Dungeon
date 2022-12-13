@@ -1,4 +1,4 @@
-from . import __OpenaiAdapter, __PromptStack as PromptStack, __utils
+from . import __OpenaiAdapter as OpenaiAdapter, __PromptStack as PromptStack
 import json
 
 # recommended workflow:
@@ -15,37 +15,41 @@ confJsonPathSuffix = ".json"
 saveJsonPathPrefix = "saves/save-u-"
 saveJsonPathSuffix = ".json"
 
-class generator:
 
-    def __init__(self, key: str, uid: int, debug=False) -> None:
+class Generator:
+
+    def __init__(self, uid: int, saveName: str, debug=False) -> None:
         self.__debug = debug
-        self.__key = key
         self.__uid = uid
-        
-        self.__loadFromConfig()
-        self.__parseDefaultConfig()
-        
+        self.__saveName = saveName
+        self.__configPath = confJsonPathPrefix + str(
+            self.__uid) + confJsonPathSuffix
+        self.__savePath = saveJsonPathPrefix + str(
+            self.__uid) + saveJsonPathSuffix
+
+        if not self.__loadFromConfig():
+            self.__openaiAdapter = OpenaiAdapter.OpenAIAdapter(
+                self.key, self.__debug)
+            self.__parseDefaultConfig()
+            self.serializeToConfig()
+        if self.__saveName == "" or not self.__loadFromSave(self.__saveName):
+            self.promptStack = PromptStack.PromptStack(debug)
+
         self.__generatingPrompt = "\nContinue the story above. "
         self.__generateSuffix = "\nContinues: "
         self.__summarizingPrompt = "\nSummarize the story above into " + str(
             self.summarizingSentenceCount) + " sentences."
         self.__summarizeSuffix = "\nResult: "
-        self.__configPath = confJsonPathPrefix + str(uid) + confJsonPathSuffix
-        self.__savePath = saveJsonPathPrefix + str(uid) + saveJsonPathSuffix
-        self.__openaiAdapter = __OpenaiAdapter.OpenAIAdapter(
-            self.__key, self.__debug)
-        
-        self.promptStack = PromptStack.PromptStack(debug)
 
     # functions
     def __parseAiSettings(self) -> None:
         self.__openaiAdapter.setParams(
             engine=self.aiSettings["engine"],
-            temperature=self.aiSettings["temperature"],
-            max_tokens=self.aiSettings["max_tokens"],
-            top_p=self.aiSettings["top_p"],
-            frequency_penalty=self.aiSettings["frequency_penalty"],
-            presence_penalty=self.aiSettings["presence_penalty"],
+            temperature=float(self.aiSettings["temperature"]),
+            max_tokens=int(self.aiSettings["max_tokens"]),
+            top_p=float(self.aiSettings["top_p"]),
+            frequency_penalty=float(self.aiSettings["frequency_penalty"]),
+            presence_penalty=int(self.aiSettings["presence_penalty"]),
         )
 
     def setStartingText(self, text: str) -> None:
@@ -68,8 +72,9 @@ class generator:
             PromptStack.Prompt(PromptStack.PromptType.GENERATED,
                                generatedText))
         self.__dealWithPromptTooLong()
+        self.serializeToSave()
 
-    def dealWithPromptTooLong(self) -> None:
+    def __dealWithPromptTooLong(self) -> None:
         if self.__debug:
             print("Word count now:", self.promptStack.getWordCount())
         if self.promptStack.getWordCount() > self.wordCountThreshold:
@@ -90,12 +95,13 @@ class generator:
 
     def __parseDefaultConfig(self):
         # config
+        self.key = ""
         self.wordCountThreshold = 300
         self.promptsToKeepWhenSummarizing = 4
-        self.styleHintPrompt = ""
+        self.styleHintPrompt = "Describe the surroundings and character's behavior in detail. Do not mention what [You] have done"
         self.summarizingSentenceCount = 4
         self.aiSettings = {
-            "engine": "curie-instruct-test",
+            "engine": "curie-instruct-beta",
             "temperature": 0.6,
             "max_tokens": 200,
             "max_tokens_summary": 500,
@@ -107,53 +113,131 @@ class generator:
 
     def serializeToConfig(self):
         output = {
+            "key": self.key,
             "wordCountThreshold": self.wordCountThreshold,
             "promptsToKeepWhenSummarizing": self.promptsToKeepWhenSummarizing,
             "styleHintPrompt": self.styleHintPrompt,
             "summarizingSentenceCount": self.summarizingSentenceCount,
             "aiSettings": self.aiSettings,
         }
-        with open(self.__configPath) as f:
+        with open(self.__configPath, "w") as f:
             json.dump(output, f)
-    
+
     def __loadFromConfig(self) -> bool:
         try:
             with open(self.__configPath) as f:
                 data = json.load(f)
-                self.wordCountThreshold = data["wordCountThreshold"]
-                self.promptsToKeepWhenSummarizing = data["promptsToKeepWhenSummarizing"]
+                self.key = data["key"]
+                self.wordCountThreshold = int(data["wordCountThreshold"])
+                self.promptsToKeepWhenSummarizing = int(
+                    data["promptsToKeepWhenSummarizing"])
                 self.styleHintPrompt = data["styleHintPrompt"]
-                self.summarizingSentenceCount = data["summarizingSentenceCount"]
+                self.summarizingSentenceCount = int(
+                    data["summarizingSentenceCount"])
                 self.aiSettings = data["aiSettings"]
+                self.__openaiAdapter = OpenaiAdapter.OpenAIAdapter(
+                    self.key, self.__debug)
                 self.__parseAiSettings()
                 return True
         except Exception as e:
-            if self.__debug:
-                print("Error loading config:", e)
+            # if self.__debug:
+            print("Error loading config:", e)
             return False
-        
-    def serializeToSave(self, saveName: str) -> None:
+
+    def serializeToSave(self, ) -> None:
         data = self.promptStack.getJson()
-        with open(self.__savePath) as f:
+        with open(self.__savePath, "r") as f:
             oldData = json.load(f)
+            for save in oldData:
+                if save["name"] == self.__saveName:
+                    oldData.remove(save)
+                    break
             oldData.append({
-                "name": saveName,
+                "name": self.__saveName,
                 "data": data,
             })
+        with open(self.__savePath, "w") as f:
             json.dump(oldData, f)
-    
-    def getSaveNames(self) -> dict:
-        with open(self.__savePath) as f:
-            data = json.load(f)
-            return [x["name"] for x in data]
-    
-    def loadFromSave(self, saveName: str):
-        with open(self.__savePath) as f:
-            data = json.load(f)
-            for x in data:
-                if x["name"] == saveName:
-                    self.promptStack = PromptStack.PromptStack(self.__debug)
-                    self.promptStack.parseJson(x["data"])
-                    return True
+
+    def getSaveNames(self) -> list:
+        try:
+            with open(self.__savePath) as f:
+                data = json.load(f)
+                return [x["name"] for x in data]
+        except Exception as e:
+            if self.__debug:
+                print("Error loading saves:", e)
+            return []
+
+    def getSettings(self) -> dict:
+        return {
+            "key": self.key,
+            "wordCountThreshold": self.wordCountThreshold,
+            "promptsToKeepWhenSummarizing": self.promptsToKeepWhenSummarizing,
+            "styleHintPrompt": self.styleHintPrompt,
+            "summarizingSentenceCount": self.summarizingSentenceCount,
+            "aiSettings": self.aiSettings,
+        }
+
+    def getEngineList(self) -> list:
+        return self.__openaiAdapter.getEngineList()
+
+    def __loadFromSave(self, saveName: str):
+        try:
+            with open(self.__savePath) as f:
+                data = json.load(f)
+                for x in data:
+                    if x["name"] == saveName:
+                        self.promptStack = PromptStack.PromptStack(
+                            self.__debug)
+                        self.promptStack.parseJson(x["data"])
+                        return True
+        except Exception as e:
+            print("Error loading save:", e)
             return False
-        
+
+    def createSave(self):
+        try:
+            with open(self.__savePath, "r") as f:
+                oldSaves = json.load(f)
+                for saves in oldSaves:
+                    if saves["name"] == self.__saveName:
+                        return False
+        except:
+            oldSaves = []
+        oldSaves.append({
+            "name": self.__saveName,
+            "data": self.promptStack.getJson(),
+        })
+        with open(self.__savePath, "w") as f:
+            json.dump(oldSaves, f)
+        return True
+
+    def deleteSave(self):
+        with open(self.__savePath, "r") as f:
+            oldSaves = json.load(f)
+            for saves in oldSaves:
+                if saves["name"] == self.__saveName:
+                    oldSaves.remove(saves)
+                    break
+        with open(self.__savePath, "w") as f:
+            json.dump(oldSaves, f)
+        return True
+
+    def parseJsonConf(self, input: dict):
+        if "key" in input:
+            self.key = input["key"]
+        if "wordCountThreshold" in input:
+            self.wordCountThreshold = input["wordCountThreshold"]
+        if "promptsToKeepWhenSummarizing" in input:
+            self.promptsToKeepWhenSummarizing = input[
+                "promptsToKeepWhenSummarizing"]
+        if "styleHintPrompt" in input:
+            self.styleHintPrompt = input["styleHintPrompt"]
+        if "summarizingSentenceCount" in input:
+            self.summarizingSentenceCount = input["summarizingSentenceCount"]
+        if "aiSettings" in input:
+            self.aiSettings = input["aiSettings"]
+        self.__parseAiSettings()
+        self.serializeToConfig()
+        return True

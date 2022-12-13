@@ -66,3 +66,11 @@ class OpenAIAdapter:
         result = self.__lastOutput
         self.__lastOutput = ""
         return result
+
+    def getEngineList(self) -> list:
+        ai = import_module("openai")
+        list = []
+        ai.api_key = self.__key
+        for item in ai.Engine.list()["data"]:
+            list.append(item["id"])
+        return list

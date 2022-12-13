@@ -1,4 +1,4 @@
-from controller import generator
+from controller import generator as gen
 from copy import deepcopy as copyDeep
 import __utils
 
@@ -16,9 +16,9 @@ sendContentTemplate = {
 }
 
 
-def __promptToJson(prompt: generator.PromptStack.Prompt) -> dict:
+def __promptToJson(prompt: gen.PromptStack.Prompt) -> dict:
     newPromptJson = copyDeep(sendContentTemplate)
-    if prompt.type == generator.PromptStack.PromptType.INPUTED:
+    if prompt.type == gen.PromptStack.PromptType.INPUTED:
         newPromptJson["type"] = "user"
     else:
         newPromptJson["type"] = "generated"
@@ -44,7 +44,8 @@ def parseUserInput(mode: str, text: str) -> str:
         raise Exception("Invalid user mode")
 
 
-def startCallback() -> dict:
+def startCallback(input: dict) -> dict:
+    generator = gen.Generator(input["uid"], input["save-name"])
     jsonToSend = copyDeep(sendContentListTemplate)
     for prompt in generator.promptStack.getFullPrompt():
         jsonToSend["new-content-list"].append(__promptToJson(prompt))
@@ -52,6 +53,7 @@ def startCallback() -> dict:
 
 
 def inputCallback(input: dict) -> dict:
+    generator = gen.Generator(input["uid"], input["save-name"])
     # supports commands until buttons are implemented
     jsonToSend = copyDeep(sendContentListTemplate)
     if len(input["user-input"]) > 0 and input["user-input"][0] == "/":
@@ -66,6 +68,34 @@ def inputCallback(input: dict) -> dict:
         generator.generateText()
         for prompt in generator.promptStack.getFullPrompt():
             if prompt.getId() not in oldPromptIdList:
-                jsonToSend["new-content-list"].append(promptToJson(prompt))
+                jsonToSend["new-content-list"].append(__promptToJson(prompt))
     # TODO: implement active-word-count and last-time-summarized
     return jsonToSend
+
+
+def getSaveNamesCallback(input: dict) -> dict:
+    generator = gen.Generator(uid=input["uid"], saveName="")
+    return {
+        "save-names": generator.getSaveNames(),
+        "settings": generator.getSettings(),
+        "engine-list": generator.getEngineList()
+    }
+
+
+def handleSaveCallback(input: dict):
+    success = False
+    if input["save-name"] != "":
+        generator = gen.Generator(uid=input["uid"],
+                                  saveName=input["save-name"])
+        if input["operation"] == "create":
+            success = generator.createSave()
+        elif input["operation"] == "delete":
+            success = generator.deleteSave()
+    return {"success": ("True" if success else "False")}
+
+
+def handleOptionsCallback(input: dict):
+    success = False
+    generator = gen.Generator(uid=input["uid"], saveName="")
+    generator.parseJsonConf(input)
+    return {"success": ("True" if success else "False")}

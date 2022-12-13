@@ -15,33 +15,43 @@ function setCookie(cname, cvalue, exdays) {
     document.cookie = cname + "=" + cvalue + "; " + expires;
 }
 
-function delCookie(cname) {
-    setCookie(cname, "", -1);
+function solidfyTokenCookie(uid, token) {
+    setCookie("uid", uid, 7);
+    setCookie("token", token, 7);
 }
 
-function checkToken() {
-    var uid = getCookie("uid");
-    var token = getCookie("token");
+function getIn(uid, token) {
+    if (token != "" && uid != "") {
+        solidfyTokenCookie(uid, token);
+        window.location.href = "/?play=True";
+    }
+}
+
+$("#login-form").submit(function (e) {
+    e.preventDefault();
+    var uname = $("#login-username").val();
+    var pass = $("#login-password").val();
     $.ajax({
-        url: "/auth-token",
+        url: "/auth-password",
         type: "POST",
         contentType: 'application/json',
         data: JSON.stringify({
-            "uid": uid,
-            "token": token
+            "uname": uname,
+            "pass": pass
         }),
         success: function (data) {
+            console.log(data);
             if (data["success"] == "True") {
-                console.log("Token is valid");
+                getIn(data["uid"], data["token"]);
             }
             else {
-                delCookie("uid");
-                delCookie("token");
-                window.location.href = "/";
+                $("#login-password").attr("class", "login-failed-input");
             }
         }
     });
-}
+});
 
-// on load:
-checkToken()
+
+var uid = getCookie("uid");
+var token = getCookie("token");
+getIn(uid, token);

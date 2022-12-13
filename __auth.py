@@ -1,6 +1,7 @@
 import json as __j
 import os as __o
 import random as __r
+from webService.webUi import log
 """
     json example:
     [
@@ -33,7 +34,7 @@ def __checkAuth(uid: str, token: str):
     with open(jsonPath, "r") as f:
         data = __j.load(f)
         for user in data:
-            if user["uid"] == uid and user["token"] == token:
+            if str(user["uid"]) == uid and user["token"] == token:
                 return {"success": "True"}
     return {"success": "False"}
 

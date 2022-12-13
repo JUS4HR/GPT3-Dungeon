@@ -6,12 +6,11 @@ __app = None
 
 def __callbackPlaceholder(input: dict) -> dict:
     __app.logger.warning("Callback not set")
-    return input
+    return {}
 
 
 __authTokenCallback = __callbackPlaceholder
 __authPasswdCallback = __callbackPlaceholder
-__loadPlayCallback = __callbackPlaceholder
 __startCallback = __callbackPlaceholder
 __inputCallback = __callbackPlaceholder
 
@@ -25,10 +24,6 @@ def init(name: str):
     @__app.route("/")
     def loadIndex():
         if __f.request.args.get("play") == "True":
-            __loadPlayCallback({
-                "uid": __f.request.args.get("uid"),
-                "token": __f.request.args.get("token"),
-            })
             __app.logger.info("load play")
             return __f.render_template("play.html")
         else:
@@ -47,7 +42,7 @@ def init(name: str):
 
     @__app.route("/start", methods=["POST"])
     def processStart():
-        return __f.jsonify(__startCallback())
+        return __f.jsonify(__startCallback({}))
 
     @__app.route('/process', methods=['POST'])
     def processInput():
@@ -67,11 +62,6 @@ def setAuthTokenCallback(callback: Callable[[], dict]):
 def setAuthPasswdCallback(callback: Callable[[], dict]):
     global __authPasswdCallback
     __authPasswdCallback = callback
-
-
-def setLoadPlayCallback(callback: Callable[[], dict]):
-    global __loadPlayCallback
-    __loadPlayCallback = callback
 
 
 def setStartCallback(callback: Callable[[], dict]):

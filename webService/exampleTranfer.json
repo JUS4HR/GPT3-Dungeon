@@ -1,6 +1,7 @@
 {
     "@description": "this file is for demonstrating the transferred json",
     "@from web to flask": {
+        "uid": "",
         "modified-content-list": [
             {
                 "type": "user",

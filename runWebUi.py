@@ -7,8 +7,8 @@ startingPrompt = jsonLoad(open("startingPrompt.json", "r"))[0]["prompt"]
 
 webUi.setAuthTokenCallback(__auth.authTokenCallback)
 webUi.setAuthPasswdCallback(__auth.authPasswordCallback)
-# webUi.setStartCallback(__ctrl.startCallback)
-# webUi.setInputCallback(__ctrl.inputCallback)
+webUi.setStartCallback(__controller.startCallback)
+webUi.setInputCallback(__controller.inputCallback)
 
 # generator.debug = False
 # generator.parseAiSettings()

@@ -2,6 +2,7 @@ from controller import generator
 from webService import webUi, utils
 from json import load as jsonLoad
 from copy import deepcopy as copyDeep
+import auth
 
 sendContentListTemplate = {
     "new-content-list": [],
@@ -72,6 +73,8 @@ def inputCallback(input: dict) -> dict:
     return jsonToSend
 
 
+webUi.setAuthTokenCallback(auth.authTokenCallback)
+webUi.setAuthPasswdCallback(auth.authPasswordCallback)
 webUi.setStartCallback(startCallback)
 webUi.setInputCallback(inputCallback)
 
@@ -79,7 +82,7 @@ generator.debug = False
 generator.parseAiSettings()
 generator.setStartingText(startingPrompt)
 generator.styleHintPrompt = "Describe the surroundings and character's behavior in detail. Do not mention what \"You\" have done."
-generator.generateText()
+# generator.generateText()
 
 webUi.init(__name__)
 webUi.run(10000, False)

@@ -9,6 +9,9 @@ def __callbackPlaceholder(input: dict) -> dict:
     return input
 
 
+__authTokenCallback = __callbackPlaceholder
+__authPasswdCallback = __callbackPlaceholder
+__loadPlayCallback = __callbackPlaceholder
 __startCallback = __callbackPlaceholder
 __inputCallback = __callbackPlaceholder
 
@@ -20,11 +23,27 @@ def init(name: str):
                       static_folder="webService/static")
 
     @__app.route("/")
-    
+    def loadIndex():
+        if __f.request.args.get("play") == "True":
+            __loadPlayCallback({
+                "uid": __f.request.args.get("uid"),
+                "token": __f.request.args.get("token"),
+            })
+            __app.logger.info("load play")
+            return __f.render_template("play.html")
+        else:
+            __app.logger.info("load index")
+            return __f.render_template("login.html")
 
-    @__app.route("/play")
-    def loadPlay():
-        return __f.render_template("play.html")
+    @__app.route("/auth-token", methods=["POST"])
+    def authToken():
+        form = __f.request.json
+        return __f.jsonify(__authTokenCallback(form))
+
+    @__app.route("/auth-password", methods=["POST"])
+    def authPassword():
+        form = __f.request.json
+        return __f.jsonify(__authPasswdCallback(form))
 
     @__app.route("/start", methods=["POST"])
     def processStart():
@@ -38,6 +57,21 @@ def init(name: str):
 
 def log(*args, **kwargs):
     __app.logger.info(*args, **kwargs)
+
+
+def setAuthTokenCallback(callback: Callable[[], dict]):
+    global __authTokenCallback
+    __authTokenCallback = callback
+
+
+def setAuthPasswdCallback(callback: Callable[[], dict]):
+    global __authPasswdCallback
+    __authPasswdCallback = callback
+
+
+def setLoadPlayCallback(callback: Callable[[], dict]):
+    global __loadPlayCallback
+    __loadPlayCallback = callback
 
 
 def setStartCallback(callback: Callable[[], dict]):

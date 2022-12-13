@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>GPT-3 Demo</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/style.css')}}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+</head>
+
+<body>
+    <form id="login-form" class="login-form">
+        <input type="text" id="login-username" name="login-username" placeholder="Username" />
+        <input type="password" id="login-password" name="login-password" placeholder="Password" />
+        <button type="submit" id="login-submit" class="login-submit">Login</button>
+        <button type="button" id="login-register" class="login-register">Register</button>
+    </form>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="{{url_for('static', filename='js/loginController.js')}}"></script>
+
+</html>

@@ -1,7 +1,7 @@
 from controller.generator import generator
 from webService import webUi
 from json import load as jsonLoad
-import __auth, __ctrl
+import __auth, __controller
 
 startingPrompt = jsonLoad(open("startingPrompt.json", "r"))[0]["prompt"]
 

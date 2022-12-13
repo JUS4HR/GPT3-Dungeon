@@ -12,6 +12,8 @@ import json
 
 confJsonPathPrefix = "config/generator/u-"
 confJsonPathSuffix = ".json"
+saveJsonPathPrefix = "saves/save-u-"
+saveJsonPathSuffix = ".json"
 
 class generator:
 
@@ -29,6 +31,7 @@ class generator:
             self.summarizingSentenceCount) + " sentences."
         self.__summarizeSuffix = "\nResult: "
         self.__configPath = confJsonPathPrefix + str(uid) + confJsonPathSuffix
+        self.__savePath = saveJsonPathPrefix + str(uid) + saveJsonPathSuffix
         self.__openaiAdapter = __OpenaiAdapter.OpenAIAdapter(
             self.__key, self.__debug)
         
@@ -128,3 +131,29 @@ class generator:
             if self.__debug:
                 print("Error loading config:", e)
             return False
+        
+    def serializeToSave(self, saveName: str) -> None:
+        data = self.promptStack.getJson()
+        with open(self.__savePath) as f:
+            oldData = json.load(f)
+            oldData.append({
+                "name": saveName,
+                "data": data,
+            })
+            json.dump(oldData, f)
+    
+    def getSaveNames(self) -> dict:
+        with open(self.__savePath) as f:
+            data = json.load(f)
+            return [x["name"] for x in data]
+    
+    def loadFromSave(self, saveName: str):
+        with open(self.__savePath) as f:
+            data = json.load(f)
+            for x in data:
+                if x["name"] == saveName:
+                    self.promptStack = PromptStack.PromptStack(self.__debug)
+                    self.promptStack.parseJson(x["data"])
+                    return True
+            return False
+        

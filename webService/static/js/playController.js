@@ -14,6 +14,7 @@ const transferTemplate = {
     "modified-content-list": [
     ],
     "uid": "",
+    "save": "",
     "user-mode": "",
     "user-input": "",
 }
@@ -28,6 +29,8 @@ const contentUserPrefix = "⤷ "
 const contentUserClass = "content-user"
 
 var activeUserMode = "say";
+var activeSave = getCookie("active-save");
+
 $("#mode-button").html(userMode[activeUserMode]);
 
 $("#user-input-form").submit(function (e) {
@@ -40,6 +43,7 @@ $("#user-input-form").submit(function (e) {
     var userInput = $("#user-input").val();
     var data = transferTemplate;
     data["uid"] = getCookie("uid");
+    data["save"] = activeSave;
     data["user-mode"] = activeUserMode;
     data["user-input"] = userInput;
     $.ajax({
@@ -122,4 +126,12 @@ function getStartingPrompt() {
         }
     });
 }
-getStartingPrompt();
+
+
+if (activeSave == "") {
+    // ask for save name
+    window.location.href = "/?options=True";
+}
+else{
+    getStartingPrompt();
+}

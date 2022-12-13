@@ -4,13 +4,13 @@ __GPT3-DUNGEON__
     Based on OpenAi api, generates story according to player input
  * **Heavily WIP:**    
     - [x] basic game on web ui
-    - [ ] retry last: `/r` or `/retry` command
+    - [x] acounts (no registering for now)
+    - [ ] retry last
     - [ ] undo
     - [ ] pin-point edit
-    - [ ] change settings in app
-    - [ ] save and load
+    - [x] change settings in app
+    - [x] save and load
     - [ ] redo
-    - [ ] impliment those with web ui buttons
 
  * **Usage**    
     use python 3.10+    

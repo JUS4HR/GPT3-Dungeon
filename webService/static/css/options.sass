@@ -1,0 +1,65 @@
+@import "colorScheme"
+@import "size"
+
+.options
+    display: flex
+    flex-direction: column
+    align-items: top
+    padding: $content-list-margin
+    width: calc(100% - $content-list-margin * 2)
+    margin: 0
+    margin-top: $safe-area-top
+    margin-bottom: $safe-area-bottom
+    color: $color-text
+    position: sticky
+
+    section
+        outline: 1px solid $border-color
+        border: none
+        border-radius: $content-list-border-radius
+        padding: $content-list-padding
+        margin-top: $content-list-margin
+        margin-bottom: $content-list-margin
+        width: calc(100% - $content-list-padding * 2)
+        color: $color-text
+
+    select, input, textarea
+        padding: $input-padding
+        background-color: $color-midground
+        font-size: $input-font-size
+        border: none
+        border-radius: $login-input-border-radius
+        width: calc(100% - $input-padding * 2)
+        color: $color-text
+
+    textarea
+        line-break: auto
+
+    label
+        color: $color-text-secondary
+        font-size: $base-font-size
+
+    button
+        font-size: $base-font-size
+        width: 8rem
+        max-width: 80%
+        padding: $input-padding
+        margin: 0.5rem
+        background-color: $color-primary
+        border-radius: $login-input-border-radius
+        border: none
+        box-shadow: $color-shadow 0 0 0.5rem 0
+        transition: box-shadow $transition-duration
+        color: $color-text
+        
+        &:focus, &:hover
+            outline: none
+            background-color: $color-primary-highlight
+            box-shadow: $color-primary-glowing 0 0 0.5rem 0
+        &:active
+            background-color: $color-primary
+            box-shadow: $color-primary-glowing 0 0 0.5rem 0
+
+        &.back-button
+            background-color: $color-midground
+            align-self: flex-start

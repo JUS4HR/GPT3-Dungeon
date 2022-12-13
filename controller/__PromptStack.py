@@ -59,6 +59,13 @@ class Prompt:
     def updateText(self, text: str) -> None:
         self.__text = text
 
+    def getJson(self) -> dict:
+        return {
+            "type": self.type.name,
+            "text": self.__text,
+            "id": self.__id,
+        }
+
 
 class PromptStack:
 
@@ -67,6 +74,19 @@ class PromptStack:
         self.__activePrompts = []
         self.__allPromptHistory = []
         self.__wordCount = 0
+
+    def parseJson(self, json: dict) -> None:
+        self.__debug = False
+        self.__activePrompts = []
+        self.__allPromptHistory = []
+        self.__wordCount = 0
+        for item in json["all"]:
+            self.__allPromptHistory.append(
+                Prompt(PromptType[item["type"]], item["text"]))
+        for item in json["active"]:
+            self.__activePrompts.append(
+                Prompt(PromptType[item["type"]], item["text"]))
+        self.__recalculateWordCount()
 
     def addPrompt(self, prompt: Prompt):
         if prompt.getWordCount() == 0:
@@ -115,4 +135,10 @@ class PromptStack:
                 self.__allPromptHistory = self.__allPromptHistory[:-1]
             else:
                 return i
-        return -1 # -1 is normal instead
+        return -1  # -1 is normal instead
+
+    def getJson(self) -> list[dict]:
+        return {
+            "all": [item.getJson() for item in self.__allPromptHistory],
+            "active": [item.getJson() for item in self.__activePrompts],
+        }

@@ -1,0 +1,53 @@
+@import "colorScheme"
+@import "size"
+
+.login-form
+    width: 100%
+    height: 100%
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+
+    input
+        font-size: $base-font-size
+        width: 20rem
+        max-width: 80%
+        padding: $input-padding
+        margin: 0.5rem
+        background-color: $color-midground
+        border-radius: $login-input-border-radius
+        border: none
+        color: $color-text
+        box-shadow: $color-shadow 0 0 0.5rem 0
+        transition: box-shadow $transition-duration
+        &:focus, &:hover
+            outline: none
+            background-color: $color-forground
+            box-shadow: $color-primary-glowing 0 0 0.5rem 0
+
+        &.login-failed-input
+            background-color: $color-error
+
+    button
+        font-size: $base-font-size
+        width: 8rem
+        max-width: 80%
+        padding: $input-padding
+        margin: 0.5rem
+        background-color: $color-primary
+        border-radius: $login-input-border-radius
+        border: none
+        color: $color-text
+        box-shadow: $color-shadow 0 0 0.5rem 0
+        transition: box-shadow $transition-duration
+        &:focus, &:hover
+            outline: none
+            background-color: $color-primary-highlight
+            box-shadow: $color-primary-glowing 0 0 0.5rem 0
+        &:active
+            background-color: $color-primary
+            box-shadow: $color-primary-glowing 0 0 0.5rem 0
+        
+        &.login-register
+            background-color: $color-midground

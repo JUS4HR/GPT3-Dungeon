@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html class="html-no-scroll">
 
 <head>
     <title>GPT-3 Demo</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/style.css')}}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport"
+        content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
 </head>
-<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/style.css')}}">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="viewport"
-    content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="mobile-web-app-capable" content="yes">
 
-<body>
+<body class="body-no-scroll">
     <div id="content-list" class="content-list">
         <ol id="content-list-content">
-            <li>items</li>
+            <!-- <li>items</li>
             <li>to</li>
             <li>make</li>
             <li>it</li>
@@ -25,7 +25,7 @@
             <li>list</li>
             <li>outside</li>
             <li>the</li>
-            <li>page</li>
+            <li>page</li> -->
         </ol>
         <div id="content-list-end"></div>
     </div>
@@ -47,7 +47,8 @@
                     </form>
                 </div>
                 <div id="bottom-menu" class="hud-bottom-menu">
-                    <button type="button">this</button>
+                    <button type="button" id="btn-options">Options</button>
+                    <!-- <button type="button">this</button>
                     <button type="button">will</button>
                     <button type="button">be</button>
                     <button type="button">where</button>
@@ -57,7 +58,7 @@
                     <button type="button">buttons</button>
                     <button type="button">will</button>
                     <button type="button">be</button>
-                    <button type="button">at</button>
+                    <button type="button">at</button> -->
                 </div>
             </div>
         </section>
@@ -65,8 +66,7 @@
 </body>
 
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-<script src="{{url_for('static', filename='js/dataTransfer.js')}}"></script>
+<script src="{{url_for('static', filename='js/playController.js')}}"></script>
 <script src="{{url_for('static', filename='js/inputBarHeightControl.js')}}"></script>
-<script src="{{url_for('static', filename='js/scrollingDisabler.js')}}"></script>
-
+<script src="{{url_for('static', filename='js/loginController.js')}}"></script>
 </html>

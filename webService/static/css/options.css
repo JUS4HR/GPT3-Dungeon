@@ -1,0 +1,65 @@
+.options {
+  display: flex;
+  flex-direction: column;
+  align-items: top;
+  padding: 1rem;
+  width: calc(100% - 2rem);
+  margin: 0;
+  margin-top: env(safe-area-inset-top);
+  margin-bottom: env(safe-area-inset-bottom);
+  color: rgb(255, 255, 255);
+  position: -webkit-sticky;
+  position: sticky;
+}
+.options section {
+  outline: 1px solid rgb(85, 85, 85);
+  border: none;
+  border-radius: 0.3rem;
+  padding: 0.5rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  width: calc(100% - 1rem);
+  color: rgb(255, 255, 255);
+}
+.options select, .options input, .options textarea {
+  padding: 0.5rem;
+  background-color: rgb(53, 53, 53);
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.3rem;
+  width: calc(100% - 1rem);
+  color: rgb(255, 255, 255);
+}
+.options textarea {
+  line-break: auto;
+}
+.options label {
+  color: rgb(189, 189, 189);
+  font-size: 1rem;
+}
+.options button {
+  font-size: 1rem;
+  width: 8rem;
+  max-width: 80%;
+  padding: 0.5rem;
+  margin: 0.5rem;
+  background-color: rgb(255, 0, 98);
+  border-radius: 0.3rem;
+  border: none;
+  box-shadow: rgba(0, 0, 0, 0.349) 0 0 0.5rem 0;
+  transition: box-shadow 0.3s;
+  color: rgb(255, 255, 255);
+}
+.options button:focus, .options button:hover {
+  outline: none;
+  background-color: rgb(255, 18, 109);
+  box-shadow: rgb(255, 0, 98) 0 0 0.5rem 0;
+}
+.options button:active {
+  background-color: rgb(255, 0, 98);
+  box-shadow: rgb(255, 0, 98) 0 0 0.5rem 0;
+}
+.options button.back-button {
+  background-color: rgb(53, 53, 53);
+  align-self: flex-start;
+}/*# sourceMappingURL=options.css.map */

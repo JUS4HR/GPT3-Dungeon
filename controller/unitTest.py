@@ -1,16 +1,24 @@
 from .__PromptStack import PromptStack, Prompt, PromptType
-from .__OpenaiAdapter import init, generateResponse
+from .__OpenaiAdapter import OpenAIAdapter
 
 
 # Unit tests
-def testAiAdapter():
+def testAiAdapter(prompt: str = None):
     print("Unit Test, don,t run this in any other curcumstances!")
-    init(debug=True)
-    # list = __ai.Model.list()
-    # for item in list["data"]:
-    #     if "instruct" in item["id"]:
-    #         print(item["id"])
-    print(generateResponse("Explain the gravity wave to a 10 years old."))
+    from os import getenv as __osGetenv
+    key = __osGetenv("OPENAI_API_KEY")
+    adapter = OpenAIAdapter(key, debug=True)
+    adapter.setParams(
+        engine="curie-instruct-beta",
+        temperature=0.6,
+        max_tokens=200,
+        top_p=0.95,
+        frequency_penalty=1.0,
+        presence_penalty=0,
+    )
+    if not prompt:
+        prompt = "Generate 4 sentences explaining how to make a sandwich."
+    print(adapter.generateResponse(prompt))
 
 
 def testPromptStack():

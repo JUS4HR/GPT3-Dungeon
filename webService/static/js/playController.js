@@ -13,6 +13,7 @@ const nextUserMode = {
 const transferTemplate = {
     "modified-content-list": [
     ],
+    "uid": "",
     "user-mode": "",
     "user-input": "",
 }
@@ -38,6 +39,7 @@ $("#user-input-form").submit(function (e) {
 
     var userInput = $("#user-input").val();
     var data = transferTemplate;
+    data["uid"] = getCookie("uid");
     data["user-mode"] = activeUserMode;
     data["user-input"] = userInput;
     $.ajax({
@@ -96,6 +98,9 @@ function getStartingPrompt() {
     $.ajax({
         url: '/start',
         type: 'POST',
+        data: JSON.stringify({
+            "uid": getCookie("uid")
+        }),
         success: function (dataReceived) {
             // start of content processing
             dataReceived["new-content-list"].forEach(function (content) {

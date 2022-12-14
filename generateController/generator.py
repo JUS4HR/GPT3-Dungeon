@@ -1,4 +1,4 @@
-from . import __OpenaiAdapter as OpenaiAdapter, __PromptStack as PromptStack
+from . import __OpenaiAdapter as _OpenaiAdapter, __PromptStack as _PromptStack
 import json
 
 # recommended workflow:
@@ -10,10 +10,10 @@ import json
 # | if total word count too much, summorize all(or all but the last ones) into shorter version  |
 # +---------------------------------------------------------------------------------------------+
 
-confJsonPathPrefix = "config/generator/u-"
-confJsonPathSuffix = ".json"
-saveJsonPathPrefix = "saves/save-u-"
-saveJsonPathSuffix = ".json"
+_confJsonPathPrefix = "config/generator/u-"
+_confJsonPathSuffix = ".json"
+_saveJsonPathPrefix = "saves/save-u-"
+_saveJsonPathSuffix = ".json"
 
 
 class Generator:
@@ -22,18 +22,18 @@ class Generator:
         self.__debug = debug
         self.__uid = uid
         self.__saveName = saveName
-        self.__configPath = confJsonPathPrefix + str(
-            self.__uid) + confJsonPathSuffix
-        self.__savePath = saveJsonPathPrefix + str(
-            self.__uid) + saveJsonPathSuffix
+        self.__configPath = _confJsonPathPrefix + str(
+            self.__uid) + _confJsonPathSuffix
+        self.__savePath = _saveJsonPathPrefix + str(
+            self.__uid) + _saveJsonPathSuffix
 
         if not self.__loadFromConfig():
-            self.__openaiAdapter = OpenaiAdapter.OpenAIAdapter(
+            self.__openaiAdapter = _OpenaiAdapter.OpenAIAdapter(
                 self.key, self.__debug)
             self.__parseDefaultConfig()
             self.serializeToConfig()
         if self.__saveName == "" or not self.__loadFromSave(self.__saveName):
-            self.promptStack = PromptStack.PromptStack(debug)
+            self.promptStack = _PromptStack.PromptStack(debug)
 
         self.__generatingPrompt = "\nContinue the story above. "
         self.__generateSuffix = "\nContinues: "
@@ -55,13 +55,13 @@ class Generator:
     def setStartingText(self, text: str) -> None:
         if len(self.promptStack.getFullPrompt()) == 0:
             self.promptStack.addPrompt(
-                PromptStack.Prompt(PromptStack.PromptType.STARTING, text))
+                _PromptStack.Prompt(_PromptStack.PromptType.STARTING, text))
         else:
             print("Starting text set when stack is not empty")
 
     def addUserInputText(self, text: str) -> None:
         self.promptStack.addPrompt(
-            PromptStack.Prompt(PromptStack.PromptType.INPUTED, text))
+            _PromptStack.Prompt(_PromptStack.PromptType.INPUTED, text))
         self.__dealWithPromptTooLong()
 
     def generateText(self) -> None:
@@ -69,7 +69,7 @@ class Generator:
         prompt += self.__generatingPrompt + self.styleHintPrompt + self.__generateSuffix
         generatedText = self.__openaiAdapter.generateResponse(prompt)
         self.promptStack.addPrompt(
-            PromptStack.Prompt(PromptStack.PromptType.GENERATED,
+            _PromptStack.Prompt(_PromptStack.PromptType.GENERATED,
                                generatedText))
         self.__dealWithPromptTooLong()
         self.serializeToSave()
@@ -87,7 +87,7 @@ class Generator:
             self.__openaiAdapter.setParams(
                 max_tokens=self.aiSettings["max_tokens"])
             self.promptStack.summorizeActivePrompt(
-                PromptStack.Prompt(PromptStack.PromptType.SUMMORIZED, summary),
+                _PromptStack.Prompt(_PromptStack.PromptType.SUMMORIZED, summary),
                 self.promptsToKeepWhenSummarizing)
             if self.__debug:
                 print("summarizing from: [" + prompt + "]")
@@ -135,7 +135,7 @@ class Generator:
                 self.summarizingSentenceCount = int(
                     data["summarizingSentenceCount"])
                 self.aiSettings = data["aiSettings"]
-                self.__openaiAdapter = OpenaiAdapter.OpenAIAdapter(
+                self.__openaiAdapter = _OpenaiAdapter.OpenAIAdapter(
                     self.key, self.__debug)
                 self.__parseAiSettings()
                 return True
@@ -188,7 +188,7 @@ class Generator:
                 data = json.load(f)
                 for x in data:
                     if x["name"] == saveName:
-                        self.promptStack = PromptStack.PromptStack(
+                        self.promptStack = _PromptStack.PromptStack(
                             self.__debug)
                         self.promptStack.parseJson(x["data"])
                         return True

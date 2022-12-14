@@ -45,14 +45,45 @@ function setCookie(cname, cvalue, exdays) {
 const contentUserPrefix = "⤷ "
 const contentUserClass = "content-user"
 
-var activeUserMode = "say";
+var activeUserMode = "do";
 var activeSave = getCookie("active-save-name");
 
 $("#mode-button").html(userMode[activeUserMode]);
 
+// $("#btn-retry").click(function () {
+
+// });
+
 $("#btn-options").click(function () {
     window.location.href = "/?options=True";
 });
+
+function onSuccess(data) {
+    var atBottom = isAtBottom();
+
+    // start of content processing
+    data["new-content-list"].forEach(function (content) {
+        // console.log(content);
+        if (content["content"] != "") {
+            if (content["type"] == "user") {
+                $("#content-list-content").append('<li id="content-' + content["id"] + '" class="' + contentUserClass + '">' + contentUserPrefix + content["content"] + '</li>');
+            }
+            else {
+                $("#content-list-content").append('<li id="content-' + content["id"] + '">' + content["content"] + '</li>');
+            }
+        }
+    });
+    data["modified-content-list"].forEach(function (content) {
+        $("#content-" + content["id"]).html(content["content"]);
+    });
+    // end of content processing
+
+    $("#user-input").val("");
+    $("#submit-button").css("opacity", "1");
+    $("#submit-button").prop('disabled', false);
+    $("#submit-button-disabled").css("opacity", "0");
+    getToBottom(atBottom);
+}
 
 $("#user-input-form").submit(function (e) {
     e.preventDefault();
@@ -72,32 +103,7 @@ $("#user-input-form").submit(function (e) {
         contentType: 'application/json',
         type: 'POST',
         data: JSON.stringify(data),
-        success: function (data) {
-            var atBottom = isAtBottom();
-
-            // start of content processing
-            data["new-content-list"].forEach(function (content) {
-                // console.log(content);
-                if (content["content"] != "") {
-                    if (content["type"] == "user") {
-                        $("#content-list-content").append('<li id="content-' + content["id"] + '" class="' + contentUserClass + '">' + contentUserPrefix + content["content"] + '</li>');
-                    }
-                    else {
-                        $("#content-list-content").append('<li id="content-' + content["id"] + '">' + content["content"] + '</li>');
-                    }
-                }
-            });
-            data["modified-content-list"].forEach(function (content) {
-                $("#content-" + content["id"]).html(content["content"]);
-            });
-            // end of content processing
-
-            $("#user-input").val("");
-            $("#submit-button").css("opacity", "1");
-            $("#submit-button").prop('disabled', false);
-            $("#submit-button-disabled").css("opacity", "0");
-            getToBottom(atBottom);
-        }
+        success: onSuccess
     });
 });
 
@@ -128,25 +134,7 @@ function getStartingPrompt() {
             "uid": getCookie("uid"),
             "save-name": activeSave,
         }),
-        success: function (dataReceived) {
-            // start of content processing
-            dataReceived["new-content-list"].forEach(function (content) {
-                if (content["content"] != "") {
-                    if (content["type"] == "user") {
-                        $("#content-list-content").append('<li id="content-' + content["id"] + '" class="' + contentUserClass + '">' + contentUserPrefix + content["content"] + '</li>');
-                    }
-                    else {
-                        $("#content-list-content").append('<li id="content-' + content["id"] + '">' + content["content"] + '</li>');
-                    }
-                }
-            });
-            // end of content processing
-
-            $("#user-input").val("");
-            $("#submit-button").css("opacity", "1");
-            $("#submit-button").prop('disabled', false);
-            $("#submit-button-disabled").css("opacity", "0");
-        }
+        success: onSuccess
     });
 }
 

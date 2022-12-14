@@ -70,6 +70,7 @@ $("#btn-delete-save").click(function () {
                         if (data["success"] == "True") {
                             $("#sel-save option[value='" + name + "']").remove();
                             setCookie("active-save-name", "", 365);
+                            $("#sel-save").val("");
                         }
                     }
                 });

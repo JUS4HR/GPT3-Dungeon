@@ -241,3 +241,19 @@ class Generator:
         self.__parseAiSettings()
         self.serializeToConfig()
         return True
+    
+    def removeLast(self, count = 1):
+        self.promptStack.removeBack(count)
+        
+    def editById(self, id: int, newContent: str):
+        self.promptStack.editPromptById(id, newContent)
+        
+    def reGenerateLast(self):
+        oldLast = self.promptStack.getFullPrompt()[-1]
+        self.promptStack.removeBack()
+        try:
+            self.generateText()
+        except:
+            self.promptStack.addPrompt(oldLast)
+            raise Exception("Failed to generate text")
+        

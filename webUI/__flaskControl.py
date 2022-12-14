@@ -8,9 +8,11 @@ class ResponseType(_Enum):
     JSON = 'json'
     NONE = 'none'
 
-
 _CallBackFunctionType = _Callable[[_Dict[str, _Any]],
                                     _Tuple[ResponseType, _Dict[str, _Any]]]
+
+CallableInputType = _Dict[str, _Any]
+CallbackReturnType = _Tuple[ResponseType, _Dict[str, _Any]]
 
 
 def _callBackPlaceHolder(

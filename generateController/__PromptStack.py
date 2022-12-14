@@ -137,6 +137,27 @@ class PromptStack:
                 return i
         return -1  # -1 is normal instead
 
+    def editPromptById(self, id: int, text: str) -> None:
+        for prompt in self.__activePrompts:
+            if prompt.getId() == id:
+                prompt.updateText(text)
+                self.__recalculateWordCount()
+                break
+        for prompt in self.__allPromptHistory:
+            if prompt.getId() == id:
+                prompt.updateText(text)
+                return
+    
+    def editPromptAt(self, index: int, text: str) -> None:
+        if index >= 0:
+            raise IndexError("Index must be negative")
+        if index <= len(self.__activePrompts) and self.__activePrompts[index].type != PromptType.SUMMORIZED:
+            self.__activePrompts[index].updateText(text)
+            self.__recalculateWordCount()
+            self.__allPromptHistory[index].updateText(text)
+        else:
+            raise IndexError("Index out of range")
+
     def getJson(self) -> list[dict]:
         return {
             "all": [item.getJson() for item in self.__allPromptHistory],

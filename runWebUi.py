@@ -1,16 +1,16 @@
 from webService import webUi
 from json import load as jsonLoad
-import __auth, __controller
+import __auth_old, __controller_old
 
 startingPrompt = jsonLoad(open("startingPrompt.json", "r"))[0]["prompt"]
 
-webUi.setAuthTokenCallback(__auth.authTokenCallback)
-webUi.setAuthPasswdCallback(__auth.authPasswordCallback)
-webUi.setGetSaveNamesCallback(__controller.getSaveNamesCallback)
-webUi.setHandleSaveCallback(__controller.handleSaveCallback)
-webUi.setHandleOptionsCallback(__controller.handleOptionsCallback)
-webUi.setStartCallback(__controller.startCallback)
-webUi.setInputCallback(__controller.inputCallback)
+webUi.setAuthTokenCallback(__auth_old.authTokenCallback)
+webUi.setAuthPasswdCallback(__auth_old.authPasswordCallback)
+webUi.setGetSaveNamesCallback(__controller_old.getSaveNamesCallback)
+webUi.setHandleSaveCallback(__controller_old.handleSaveCallback)
+webUi.setHandleOptionsCallback(__controller_old.handleOptionsCallback)
+webUi.setStartCallback(__controller_old.startCallback)
+webUi.setInputCallback(__controller_old.inputCallback)
 
 # generator.debug = False
 # generator.parseAiSettings()
